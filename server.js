@@ -5,6 +5,7 @@ const application = express();
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const expressValidator = require('express-validator');
+const path = require("path");
 
 application.engine('mustache', mustache());
 application.set('view engine', 'mustache');
@@ -18,7 +19,8 @@ var storage = {
 
 application.use(cookieParser());
 application.use(bodyParser.urlencoded());
-application.use(express.static('public'));
+application.use(express.static('/public'));
+// application.use('/static', express.static(path.join(__dirname, 'views')))
 
 application.use((request, response, next) => {
     if (request.cookies.session !== undefined) {
@@ -72,6 +74,7 @@ application.post('/signin', (request, response) => {
         var password = request.body.password;
         var user = storage.users.find(user => { return user.name === name && user.password === password })
         console.log('the user', user);
+        console.log(storage);
         if (!user) {
             response.render('signin');
         } else {
